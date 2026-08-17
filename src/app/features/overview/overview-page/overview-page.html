@@ -7,5 +7,5 @@
 <app-pokemon-grid [items]="visibleItems()" />
 
 @if (hasMore()) {
-  <app-load-more-trigger [disabled]="!hasMore()" (loadMore)="loadMore()" />
+  <app-load-more-trigger [disabled]="!hasMore() || isLoading()" (loadMore)="loadMore()" />
 }

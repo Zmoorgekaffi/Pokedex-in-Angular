@@ -80,6 +80,12 @@ export class OverviewPage {
     this.isFiltering() ? this.revealCount() < this.queryFilteredPool().length : this.defaultHasMore()
   );
 
+  readonly isLoading = computed(() =>
+    this.isFiltering()
+      ? this.generationResource.isLoading() || this.typeResource.isLoading()
+      : this.pageResource.isLoading()
+  );
+
   constructor() {
     effect(() => {
       const page = this.pageResource.value();
