@@ -6,3 +6,4 @@ export * from './move.model';
 export * from './evolution-chain.model';
 export * from './generation.model';
 export * from './type.model';
+export * from './search-index-entry.model';

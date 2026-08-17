@@ -1,4 +1,25 @@
 <header class="sticky top-0 z-10 flex items-center gap-4 border-b border-neutral-200 bg-white px-4 py-3">
   <a routerLink="/" class="text-lg font-bold whitespace-nowrap">Pokédex</a>
   <app-global-search-bar class="flex-1" />
+
+  <div class="flex overflow-hidden rounded-md border border-neutral-300 text-xs font-medium">
+    <button
+      type="button"
+      (click)="setLanguage('en')"
+      [class.bg-neutral-800]="language() === 'en'"
+      [class.text-white]="language() === 'en'"
+      class="px-2 py-1"
+    >
+      EN
+    </button>
+    <button
+      type="button"
+      (click)="setLanguage('de')"
+      [class.bg-neutral-800]="language() === 'de'"
+      [class.text-white]="language() === 'de'"
+      class="px-2 py-1"
+    >
+      DE
+    </button>
+  </div>
 </header>

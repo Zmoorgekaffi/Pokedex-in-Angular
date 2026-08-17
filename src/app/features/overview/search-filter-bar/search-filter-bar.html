@@ -4,7 +4,7 @@
       type="text"
       [value]="nameQuery()"
       (input)="onNameInput($any($event.target).value)"
-      placeholder="Nach Name filtern…"
+      placeholder="Nach Name (DE/EN) oder Nummer filtern…"
       class="flex-1 rounded-md border border-neutral-300 px-3 py-1.5 text-sm"
     />
     <button
@@ -19,12 +19,23 @@
   @if (filtersExpanded()) {
     <div class="flex flex-wrap items-center gap-2">
       <select
-        [value]="selectedType() ?? ''"
-        (change)="onTypeChange($any($event.target).value)"
+        [value]="selectedType1() ?? ''"
+        (change)="onType1Change($any($event.target).value)"
         class="rounded-md border border-neutral-300 px-2 py-1.5 text-sm capitalize"
       >
-        <option value="">Alle Typen</option>
-        @for (type of types; track type) {
+        <option value="">Typ 1</option>
+        @for (type of type1Options(); track type) {
+          <option [value]="type" class="capitalize">{{ type }}</option>
+        }
+      </select>
+
+      <select
+        [value]="selectedType2() ?? ''"
+        (change)="onType2Change($any($event.target).value)"
+        class="rounded-md border border-neutral-300 px-2 py-1.5 text-sm capitalize"
+      >
+        <option value="">Typ 2</option>
+        @for (type of type2Options(); track type) {
           <option [value]="type" class="capitalize">{{ type }}</option>
         }
       </select>

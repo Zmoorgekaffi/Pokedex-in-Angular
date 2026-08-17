@@ -1,4 +1,4 @@
-import { ChangeDetectionStrategy, Component, model, signal } from '@angular/core';
+import { ChangeDetectionStrategy, Component, computed, model, signal } from '@angular/core';
 import { GenerationSelector } from '../generation-selector/generation-selector';
 
 export const POKEMON_TYPES: string[] = [
@@ -33,17 +33,26 @@ export class SearchFilterBar {
   readonly types = POKEMON_TYPES;
 
   readonly nameQuery = model('');
-  readonly selectedType = model<string | undefined>(undefined);
+  readonly selectedType1 = model<string | undefined>(undefined);
+  readonly selectedType2 = model<string | undefined>(undefined);
   readonly selectedGeneration = model<number | undefined>(undefined);
 
   readonly filtersExpanded = signal(false);
+
+  /** Excludes the other type select's current value so the same type can't be picked twice. */
+  readonly type1Options = computed(() => this.types.filter((type) => type !== this.selectedType2()));
+  readonly type2Options = computed(() => this.types.filter((type) => type !== this.selectedType1()));
 
   onNameInput(value: string): void {
     this.nameQuery.set(value);
   }
 
-  onTypeChange(value: string): void {
-    this.selectedType.set(value === '' ? undefined : value);
+  onType1Change(value: string): void {
+    this.selectedType1.set(value === '' ? undefined : value);
+  }
+
+  onType2Change(value: string): void {
+    this.selectedType2.set(value === '' ? undefined : value);
   }
 
   toggleFilters(): void {
