@@ -1,5 +1,5 @@
-import { ChangeDetectionStrategy, Component, computed, inject, input } from '@angular/core';
-import { TypeRelations } from '../../../core/models';
+import { ChangeDetectionStrategy, Component, computed, effect, inject, input, signal } from '@angular/core';
+import { Pokemon, PokemonSpecies, TypeRelations } from '../../../core/models';
 import { LanguageService } from '../../../core/services/language.service';
 import { PokemonApiService } from '../../../core/services/pokemon-api.service';
 import { extractIdFromResourceUrl, getPokemonSpriteUrl } from '../../../core/utils/pokemon.util';
@@ -27,8 +27,21 @@ export class PokemonDetailPage {
   private readonly pokemonResource = this.pokemonApi.getPokemon(() => this.id());
   private readonly speciesResource = this.pokemonApi.getPokemonSpecies(() => this.id());
 
-  readonly pokemon = computed(() => this.pokemonResource.value());
-  private readonly species = computed(() => this.speciesResource.value());
+  /**
+   * Sticky "stale-while-revalidate" copies: `resource.value()` resets to `undefined` the instant
+   * the `id` param changes (confirmed in `resource.mjs` — a new request always clears `stream`
+   * unless the request is unchanged), which briefly collapsed the whole `@if (pokemon(); ...)`
+   * template — including the mounted `EvolutionChain`/`MovesetTable` below the fold — every time
+   * the evolution slider (or any link) navigated to a new Pokémon. That read as the page jumping
+   * to a loading state (and reset the slider's position) instead of the data just swapping in
+   * place, which is what was actually wanted. These signals only ever get overwritten with a
+   * *defined* value, so the previous Pokémon stays fully rendered until the new one is ready.
+   */
+  private readonly stickyPokemon = signal<Pokemon | undefined>(undefined);
+  private readonly stickySpecies = signal<PokemonSpecies | undefined>(undefined);
+
+  readonly pokemon = computed(() => this.stickyPokemon());
+  private readonly species = computed(() => this.stickySpecies());
 
   readonly types = computed<string[]>(() => this.pokemon()?.types.map((t) => t.type.name) ?? []);
 
@@ -74,4 +87,19 @@ export class PokemonDetailPage {
     const url = this.species()?.evolution_chain.url;
     return url ? extractIdFromResourceUrl(url) : undefined;
   });
+
+  constructor() {
+    effect(() => {
+      const pokemon = this.pokemonResource.value();
+      if (pokemon) {
+        this.stickyPokemon.set(pokemon);
+      }
+    });
+    effect(() => {
+      const species = this.speciesResource.value();
+      if (species) {
+        this.stickySpecies.set(species);
+      }
+    });
+  }
 }

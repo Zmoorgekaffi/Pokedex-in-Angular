@@ -6,21 +6,20 @@
     slides-per-view="auto"
     space-between="24"
     centered-slides="true"
+    slide-to-clicked-slide="true"
     navigation="true"
+    [attr.initial-slide]="initialSlideIndex()"
+    (swiperslidechangetransitionend)="onSlideChangeEnd($any($event))"
   >
     @for (node of nodes(); track node.id) {
       <swiper-slide class="evolution-slide" style="width: 6rem">
-        <button
-          type="button"
-          (click)="goToPokemon(node)"
-          class="flex w-full flex-col items-center gap-1"
-        >
+        <div class="flex w-full flex-col items-center gap-1">
           @if (requirementLabel(node); as requirement) {
             <span class="text-xs text-neutral-400">→ {{ requirement }}</span>
           }
           <img [src]="spriteUrl(node)" [alt]="displayName(node)" loading="lazy" class="h-20 w-20 object-contain" />
           <span class="text-sm font-medium capitalize">{{ displayName(node) }}</span>
-        </button>
+        </div>
       </swiper-slide>
     }
   </swiper-container>

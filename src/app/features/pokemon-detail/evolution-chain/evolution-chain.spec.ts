@@ -25,6 +25,7 @@ describe('EvolutionChain', () => {
     fixture = TestBed.createComponent(EvolutionChain);
     component = fixture.componentInstance;
     fixture.componentRef.setInput('chainId', 1);
+    fixture.componentRef.setInput('currentId', 1);
     fixture.detectChanges();
   });
 
