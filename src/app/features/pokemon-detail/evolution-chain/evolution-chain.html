@@ -2,7 +2,7 @@
   <p class="p-4 text-sm text-neutral-500">…</p>
 } @else if (nodes().length > 0) {
   <swiper-container
-    class="w-full py-10"
+    class="w-full pt-10 h-80 flex justify-center items-center"
     slides-per-view="auto"
     space-between="24"
     centered-slides="true"
@@ -12,7 +12,7 @@
     (swiperslidechangetransitionend)="onSlideChangeEnd($any($event))"
   >
     @for (node of nodes(); track node.id) {
-      <swiper-slide class="evolution-slide" style="width: 6rem">
+      <swiper-slide class="evolution-slide flex justify-center items-center" style="width: 6rem">
         <div class="flex w-full flex-col items-center gap-1">
           @if (requirementLabel(node); as requirement) {
             <span class="text-xs text-neutral-400">→ {{ requirement }}</span>

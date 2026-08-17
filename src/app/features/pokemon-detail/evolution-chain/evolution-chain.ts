@@ -71,8 +71,18 @@ export class EvolutionChain {
   onSlideChangeEnd(event: CustomEvent<[Swiper]>): void {
     const [swiper] = event.detail;
     const node = this.nodes()[swiper.activeIndex];
-    if (node && node.id !== this.currentId()) {
-      this.router.navigate(['/pokemon', node.id]);
+    if (!node || node.id === this.currentId()) {
+      return;
     }
+    // Explicitly re-pin the scroll position around the navigation: Router itself has no scroll
+    // behavior configured (verified — no withInMemoryScrolling, and grepping the router package
+    // for scroll handling turns up nothing), so whatever resets the viewport to top is some other
+    // browser-level side effect (most likely focus loss when Swiper's own DOM updates around the
+    // slide change) rather than anything Angular is doing on purpose. Restoring is more reliable
+    // than chasing the exact native mechanism further without being able to inspect it in a browser.
+    const scrollY = window.scrollY;
+    void this.router.navigate(['/pokemon', node.id]).then(() => {
+      requestAnimationFrame(() => window.scrollTo({ top: scrollY }));
+    });
   }
 }
