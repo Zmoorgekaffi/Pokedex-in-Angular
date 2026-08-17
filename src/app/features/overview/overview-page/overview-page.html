@@ -1,4 +1,11 @@
-<section class="p-4">
-  <h1 class="text-xl font-semibold">Übersicht</h1>
-  <p class="text-sm text-neutral-500">Pokémon-Grid folgt in Phase 3.</p>
-</section>
+<app-search-filter-bar
+  [(nameQuery)]="nameQuery"
+  [(selectedType)]="selectedType"
+  [(selectedGeneration)]="selectedGeneration"
+/>
+
+<app-pokemon-grid [items]="visibleItems()" />
+
+@if (hasMore()) {
+  <app-load-more-trigger [disabled]="!hasMore()" (loadMore)="loadMore()" />
+}

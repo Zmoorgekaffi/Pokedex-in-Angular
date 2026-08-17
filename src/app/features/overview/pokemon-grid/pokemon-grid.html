@@ -1,0 +1,5 @@
+<div class="grid grid-cols-2 gap-3 p-4 sm:grid-cols-4 md:grid-cols-6 lg:grid-cols-8">
+  @for (item of items(); track item.id) {
+    <app-pokemon-card [item]="item" />
+  }
+</div>

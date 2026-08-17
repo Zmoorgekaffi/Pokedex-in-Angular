@@ -1,0 +1,10 @@
+<select
+  [value]="selected() ?? ''"
+  (change)="onChange($any($event.target).value)"
+  class="rounded-md border border-neutral-300 px-2 py-1.5 text-sm"
+>
+  <option value="">Alle Generationen</option>
+  @for (generation of generations; track generation.id) {
+    <option [value]="generation.id">{{ generation.label }}</option>
+  }
+</select>

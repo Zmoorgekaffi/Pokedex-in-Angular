@@ -1,0 +1,35 @@
+<div class="flex flex-col gap-2 border-b border-neutral-200 p-4">
+  <div class="flex items-center gap-2">
+    <input
+      type="text"
+      [value]="nameQuery()"
+      (input)="onNameInput($any($event.target).value)"
+      placeholder="Nach Name filtern…"
+      class="flex-1 rounded-md border border-neutral-300 px-3 py-1.5 text-sm"
+    />
+    <button
+      type="button"
+      (click)="toggleFilters()"
+      class="rounded-md border border-neutral-300 px-3 py-1.5 text-sm"
+    >
+      Filter {{ filtersExpanded() ? '▲' : '▼' }}
+    </button>
+  </div>
+
+  @if (filtersExpanded()) {
+    <div class="flex flex-wrap items-center gap-2">
+      <select
+        [value]="selectedType() ?? ''"
+        (change)="onTypeChange($any($event.target).value)"
+        class="rounded-md border border-neutral-300 px-2 py-1.5 text-sm capitalize"
+      >
+        <option value="">Alle Typen</option>
+        @for (type of types; track type) {
+          <option [value]="type" class="capitalize">{{ type }}</option>
+        }
+      </select>
+
+      <app-generation-selector [(selected)]="selectedGeneration" />
+    </div>
+  }
+</div>
