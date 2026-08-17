@@ -18,14 +18,28 @@ This is an Angular 20 project using the modern standalone-component style (no `N
 
 - `src/main.ts` bootstraps `App` using `appConfig`.
 - `src/app/app.config.ts` is the central provider registration point (`ApplicationConfig`). It currently wires up global error listeners, **zoneless change detection** (`provideZonelessChangeDetection()` — this app does not use `zone.js`, so change detection must be triggered via signals/`OnPush`-compatible patterns rather than relying on zone patching), and the router.
-- `src/app/app.routes.ts` holds the route table (currently empty).
-- `src/app/app.ts` is the root standalone component (selector `app-root`), using Angular signals (e.g. `signal('pokedex')`) for state.
+- `src/app/app.routes.ts` holds the route table: `/` (overview), `/pokemon/:id`, `/move/:id`, all lazy via `loadComponent`.
+- `src/app/app.ts` is the root standalone component (selector `app-root`); just renders `AppHeader` + `<router-outlet />`, no state of its own.
 
-The project is a freshly generated Angular CLI scaffold — no feature modules, services, or Pokemon-API integration exist yet.
+Code style: Prettier is configured in `package.json` (100 print width, single quotes, Angular parser for `.html` files). Component schematics default to `style: css` + `changeDetection: OnPush` (see `angular.json`), so `ng generate component` already matches convention.
 
-Code style: Prettier is configured in `package.json` (100 print width, single quotes, Angular parser for `.html` files).
+## Current status (2026-08-17)
 
-The sections below summarize the planning docs in `claude md's/` (kept there as the detailed source of truth; not auto-loaded by Claude Code since they're outside the project root, hence mirrored here). None of this is implemented yet — the codebase is still the bare CLI scaffold.
+Phases 0–3 of the roadmap below are done and pushed to `origin/master`. Phase 4 (global search) is next.
+
+- **Phase 0/1** — Tailwind v4 (`.postcssrc.json` + `src/styles.css`, `@theme` block), Swiper installed (not wired into any component yet), folder skeleton, `environment.ts`/`environment.development.ts` (`pokeApiBaseUrl`), models for `Pokemon`/`PokemonSpecies`/`Move`/`EvolutionChain` in `core/models/` (snake_case, mirror the raw PokeAPI JSON — no DTO mapping layer). `PokemonCacheService` (3 separate signal `Map`s for Pokemon/Species/EvolutionChain), `PokemonApiService`, `MoveApiService`.
+- **Phase 2** — Routes for `/`, `/pokemon/:id`, `/move/:id` (lazy `loadComponent`) in `app.routes.ts`; `withComponentInputBinding()` is enabled so route params arrive as `input()` signals on page components. `AppHeader` (persistent) hosts `GlobalSearchBar`, which is still just a disabled placeholder input — its real logic is Phase 4's job.
+- **Phase 3** — Overview page is a working vertical slice: `PokemonGrid`/`PokemonCard`/`LoadMoreTrigger`/`GenerationSelector`/`SearchFilterBar`, wired into `OverviewPage`. Default browsing paginates the national dex via `/pokemon?limit&offset`; selecting a generation hits `/generation/{id}`, selecting a type hits `/type/{name}` (a real fetch, not a client-only filter over what's loaded); selecting both intersects the two result sets client-side. Sprite images for grid tiles are built directly from the numeric ID (`core/utils/pokemon.util.ts` → `getPokemonSpriteUrl`, pointed at `raw.githubusercontent.com/PokeAPI/sprites`) instead of fetching each Pokémon individually — this is a deliberate deviation from "PokemonApiService is the sole access point," justified purely to avoid N+1 fetches for a grid; revisit if that tradeoff stops making sense.
+
+### Gotchas learned the hard way (read before touching resources/services again)
+
+- **`rxResource()` on this Angular version (20.3.28) uses `params`/`stream`, not the older `request`/`loader` naming** — check `node_modules/@angular/core/rxjs-interop/index.d.ts` / `api.d.d.ts` directly if unsure, don't trust memory/older docs.
+- **`params` returning `undefined` keeps a resource idle (no request); `null` does not** — it happily fetches `.../undefined`-shaped URLs otherwise. Optional filter params (e.g. `selectedGeneration`, `selectedType`) must be typed `T | undefined`, never `T | null`.
+- **`PokemonApiService`/`MoveApiService` methods that return `rxResource()` must be called from a real injection context** (a component field initializer or constructor) — do not wrap them in `runInInjectionContext(someInjector, ...)` inside the service using the *service's own* injector. That was tried in Phase 1 and reverted in Phase 3: it silently binds the resource's lifecycle to the root injector instead of the calling component, so the resource is never torn down when the component is destroyed (a leak). Calling these methods as a component field initializer works correctly with no wrapper needed.
+- **`LoadMoreTrigger`'s `IntersectionObserver` only fires on intersection *crossings*, not continuously** — gating `loadMore.emit()` only inside the observer callback caused a real, reproduced bug (see commit `a9c2aa2`): the sentinel could already be visible on mount, firing `loadMore()` while the first page was still loading, which raced ahead and silently dropped page 1. Fix: track intersection in a signal and re-evaluate via `effect()` on every `disabled()` change too, and make sure `disabled` accounts for the relevant resource's `isLoading()`, not just "no more data". Any future infinite-scroll/defer-loaded section (e.g. `EvolutionChain`, `MovesetTable`) should reuse `LoadMoreTrigger` as-is rather than re-implementing this.
+- No screenshot/browser-automation tool is available in this environment — verification so far has relied on `ng build`, `ng test`, and temporary throwaway spec files that hit the **real** PokeAPI (written, run, then deleted — see git history for examples). Keep doing that for new data-layer work; ask the user to eyeball actual UI/UX in their own browser.
+
+The sections below summarize the planning docs in `claude md's/` (kept there as the detailed source of truth; not auto-loaded by Claude Code since they're outside the project root, hence mirrored here). They describe the *full* target design; check "Current status" above for what's actually built so far — everything from Phase 4 onward below is still just the plan.
 
 ## Target stack & conventions (see `claude md's/pokedex-techstack.md`)
 
@@ -98,11 +112,11 @@ Flow: component calls a service method → service checks `PokemonCacheService` 
 
 Ordered by technical dependency, not feature importance:
 
-0. Tooling setup — install/configure Tailwind v4 (`@theme`, replace the current SCSS files), install Swiper.js, create `core/services`, `core/models`, `shared/components`, `features/*` folders, add data models
-1. Core services only, no UI — `PokemonCacheService` → `PokemonApiService` → `MoveApiService` (`SearchIndexService` is deferred to step 4, it needs the fetching pattern proven first)
-2. Routing skeleton for all three routes + `AppHeader` shell (`GlobalSearchBar` as an empty placeholder for now)
-3. Overview page as the first vertical slice (`PokemonGrid`/`PokemonCard`/`LoadMoreTrigger`/`GenerationSelector`/`SearchFilterBar`) — proves the data layer end-to-end
-4. Global search (`SearchIndexService` + finish `GlobalSearchBar`)
+0. ✅ Tooling setup — install/configure Tailwind v4 (`@theme`, replace the current SCSS files), install Swiper.js, create `core/services`, `core/models`, `shared/components`, `features/*` folders, add data models
+1. ✅ Core services only, no UI — `PokemonCacheService` → `PokemonApiService` → `MoveApiService` (`SearchIndexService` is deferred to step 4, it needs the fetching pattern proven first)
+2. ✅ Routing skeleton for all three routes + `AppHeader` shell (`GlobalSearchBar` as an empty placeholder for now)
+3. ✅ Overview page as the first vertical slice (`PokemonGrid`/`PokemonCard`/`LoadMoreTrigger`/`GenerationSelector`/`SearchFilterBar`) — proves the data layer end-to-end
+4. ⬅️ **next up** — Global search (`SearchIndexService` + finish `GlobalSearchBar`)
 5. Pokémon detail page, internally in this order: `PokemonHeader` → `BaseStats` → `AbilitiesList` → `TypeEffectiveness` → `EvolutionChain` → `MovesetTable`/`MoveTooltip`
 6. Move detail page (`MoveDetailAccordion`)
 7. Styling/responsive polish pass + loading/error/empty states for all `resource()` calls (not yet specified elsewhere)
