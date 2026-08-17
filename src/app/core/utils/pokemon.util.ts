@@ -11,8 +11,14 @@ export function extractIdFromResourceUrl(url: string): number {
   return match ? Number(match[1]) : NaN;
 }
 
+/**
+ * jsDelivr mirrors the same PokeAPI/sprites GitHub repo but is meant for hotlinking/production
+ * use, unlike raw.githubusercontent.com which rate-limits hard under sustained traffic (verified
+ * 2026-08-17: raw.githubusercontent.com returned 429 on every request while this jsDelivr URL
+ * returned 200) — this is what broke sprite loading across the app.
+ */
 export function getPokemonSpriteUrl(id: number): string {
-  return `https://raw.githubusercontent.com/PokeAPI/sprites/master/sprites/pokemon/${id}.png`;
+  return `https://cdn.jsdelivr.net/gh/PokeAPI/sprites/sprites/pokemon/${id}.png`;
 }
 
 export function toGridItem(resource: NamedApiResource): GridItem {

@@ -4,15 +4,15 @@ import { provideZonelessChangeDetection } from '@angular/core';
 import { ComponentFixture, TestBed } from '@angular/core/testing';
 import { provideRouter } from '@angular/router';
 
-import { PokemonDetailPage } from './pokemon-detail-page';
+import { MovesetTable } from './moveset-table';
 
-describe('PokemonDetailPage', () => {
-  let component: PokemonDetailPage;
-  let fixture: ComponentFixture<PokemonDetailPage>;
+describe('MovesetTable', () => {
+  let component: MovesetTable;
+  let fixture: ComponentFixture<MovesetTable>;
 
   beforeEach(async () => {
     await TestBed.configureTestingModule({
-      imports: [PokemonDetailPage],
+      imports: [MovesetTable],
       providers: [
         provideZonelessChangeDetection(),
         provideRouter([]),
@@ -22,8 +22,9 @@ describe('PokemonDetailPage', () => {
     })
     .compileComponents();
 
-    fixture = TestBed.createComponent(PokemonDetailPage);
+    fixture = TestBed.createComponent(MovesetTable);
     component = fixture.componentInstance;
+    fixture.componentRef.setInput('moves', []);
     fixture.detectChanges();
   });
 

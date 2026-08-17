@@ -1,0 +1,25 @@
+@if (moveName()) {
+  <div
+    class="pointer-events-none fixed z-50 flex flex-col gap-1 rounded-md border border-neutral-300 bg-white px-3 py-2 text-xs shadow-lg"
+    [style.left.px]="x() + 12"
+    [style.top.px]="y() + 12"
+  >
+    @if (isLoading()) {
+      <span class="text-neutral-400">…</span>
+    } @else {
+      <span class="font-medium capitalize">{{ displayName() }}</span>
+      @if (typeName(); as type) {
+        <span
+          class="w-fit rounded-full px-2 py-0.5 capitalize"
+          [style.background-color]="typeColor(type)"
+          [style.color]="typeTextColor(type)"
+        >{{ typeLabel(type) }}</span>
+      }
+      <div class="flex gap-3 text-neutral-500">
+        <span>PWR {{ power() ?? '—' }}</span>
+        <span>ACC {{ accuracy() ?? '—' }}</span>
+        <span>PP {{ pp() ?? '—' }}</span>
+      </div>
+    }
+  </div>
+}

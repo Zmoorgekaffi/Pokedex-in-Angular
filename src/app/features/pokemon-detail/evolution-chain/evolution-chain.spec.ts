@@ -4,15 +4,15 @@ import { provideZonelessChangeDetection } from '@angular/core';
 import { ComponentFixture, TestBed } from '@angular/core/testing';
 import { provideRouter } from '@angular/router';
 
-import { PokemonDetailPage } from './pokemon-detail-page';
+import { EvolutionChain } from './evolution-chain';
 
-describe('PokemonDetailPage', () => {
-  let component: PokemonDetailPage;
-  let fixture: ComponentFixture<PokemonDetailPage>;
+describe('EvolutionChain', () => {
+  let component: EvolutionChain;
+  let fixture: ComponentFixture<EvolutionChain>;
 
   beforeEach(async () => {
     await TestBed.configureTestingModule({
-      imports: [PokemonDetailPage],
+      imports: [EvolutionChain],
       providers: [
         provideZonelessChangeDetection(),
         provideRouter([]),
@@ -22,8 +22,9 @@ describe('PokemonDetailPage', () => {
     })
     .compileComponents();
 
-    fixture = TestBed.createComponent(PokemonDetailPage);
+    fixture = TestBed.createComponent(EvolutionChain);
     component = fixture.componentInstance;
+    fixture.componentRef.setInput('chainId', 1);
     fixture.detectChanges();
   });
 

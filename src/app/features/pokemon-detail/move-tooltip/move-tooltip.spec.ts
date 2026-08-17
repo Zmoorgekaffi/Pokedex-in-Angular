@@ -2,27 +2,21 @@ import { provideHttpClient } from '@angular/common/http';
 import { provideHttpClientTesting } from '@angular/common/http/testing';
 import { provideZonelessChangeDetection } from '@angular/core';
 import { ComponentFixture, TestBed } from '@angular/core/testing';
-import { provideRouter } from '@angular/router';
 
-import { PokemonDetailPage } from './pokemon-detail-page';
+import { MoveTooltip } from './move-tooltip';
 
-describe('PokemonDetailPage', () => {
-  let component: PokemonDetailPage;
-  let fixture: ComponentFixture<PokemonDetailPage>;
+describe('MoveTooltip', () => {
+  let component: MoveTooltip;
+  let fixture: ComponentFixture<MoveTooltip>;
 
   beforeEach(async () => {
     await TestBed.configureTestingModule({
-      imports: [PokemonDetailPage],
-      providers: [
-        provideZonelessChangeDetection(),
-        provideRouter([]),
-        provideHttpClient(),
-        provideHttpClientTesting()
-      ]
+      imports: [MoveTooltip],
+      providers: [provideZonelessChangeDetection(), provideHttpClient(), provideHttpClientTesting()]
     })
     .compileComponents();
 
-    fixture = TestBed.createComponent(PokemonDetailPage);
+    fixture = TestBed.createComponent(MoveTooltip);
     component = fixture.componentInstance;
     fixture.detectChanges();
   });

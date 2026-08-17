@@ -19,4 +19,18 @@
   <app-base-stats [stats]="pokemon.stats" />
 
   <app-abilities-list [abilities]="pokemon.abilities" />
+
+  @if (evolutionChainId(); as chainId) {
+    @defer (on viewport) {
+      <app-evolution-chain [chainId]="chainId" />
+    } @placeholder {
+      <div class="h-40"></div>
+    }
+  }
+
+  @defer (on viewport) {
+    <app-moveset-table [moves]="pokemon.moves" />
+  } @placeholder {
+    <div class="h-40"></div>
+  }
 }

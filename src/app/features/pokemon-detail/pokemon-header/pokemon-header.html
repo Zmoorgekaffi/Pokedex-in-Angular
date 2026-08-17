@@ -7,7 +7,9 @@
     <div class="flex gap-2">
       @for (type of types(); track type) {
         <span
-          class="rounded-full border border-neutral-300 px-3 py-1 text-sm capitalize"
+          class="rounded-full px-3 py-1 text-sm capitalize"
+          [style.background-color]="typeColor(type)"
+          [style.color]="typeTextColor(type)"
         >
           {{ typeLabel(type) }}
         </span>

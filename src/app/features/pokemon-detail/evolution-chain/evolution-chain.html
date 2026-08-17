@@ -1,0 +1,27 @@
+@if (isLoading()) {
+  <p class="p-4 text-sm text-neutral-500">…</p>
+} @else if (nodes().length > 0) {
+  <swiper-container
+    class="w-full py-10"
+    slides-per-view="auto"
+    space-between="24"
+    centered-slides="true"
+    navigation="true"
+  >
+    @for (node of nodes(); track node.id) {
+      <swiper-slide class="evolution-slide" style="width: 6rem">
+        <button
+          type="button"
+          (click)="goToPokemon(node)"
+          class="flex w-full flex-col items-center gap-1"
+        >
+          @if (requirementLabel(node); as requirement) {
+            <span class="text-xs text-neutral-400">→ {{ requirement }}</span>
+          }
+          <img [src]="spriteUrl(node)" [alt]="displayName(node)" loading="lazy" class="h-20 w-20 object-contain" />
+          <span class="text-sm font-medium capitalize">{{ displayName(node) }}</span>
+        </button>
+      </swiper-slide>
+    }
+  </swiper-container>
+}

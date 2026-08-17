@@ -1,4 +1,5 @@
 import { ChangeDetectionStrategy, Component, computed, inject, input } from '@angular/core';
+import { typeColor as getTypeColor, typeTextColor as getTypeTextColor } from '../../../core/constants/pokemon-type-colors.constants';
 import { typeLabel as getTypeLabel } from '../../../core/constants/pokemon-type.constants';
 import { LanguageService } from '../../../core/services/language.service';
 import { pick } from '../../../core/utils/i18n.util';
@@ -25,5 +26,13 @@ export class TypeEffectiveness {
 
   typeLabel(type: string): string {
     return getTypeLabel(type, this.language());
+  }
+
+  typeColor(type: string): string {
+    return getTypeColor(type);
+  }
+
+  typeTextColor(type: string): string {
+    return getTypeTextColor(type);
   }
 }

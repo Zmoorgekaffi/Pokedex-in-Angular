@@ -1,0 +1,48 @@
+<div class="flex flex-col gap-2 p-4">
+  <div class="flex flex-wrap items-center gap-2">
+    <select
+      [value]="methodFilter() ?? ''"
+      (change)="onMethodChange($any($event.target).value)"
+      class="rounded-md border border-neutral-300 px-2 py-1.5 text-sm"
+    >
+      <option value="">{{ methodPlaceholder() }}</option>
+      @for (method of availableMethods(); track method) {
+        <option [value]="method">{{ learnMethodLabel(method) }}</option>
+      }
+    </select>
+
+    <input
+      type="number"
+      min="1"
+      [value]="levelFilter() ?? ''"
+      (input)="onLevelInput($any($event.target).value)"
+      [placeholder]="levelPlaceholder()"
+      class="w-24 rounded-md border border-neutral-300 px-2 py-1.5 text-sm"
+    />
+  </div>
+
+  <div class="flex flex-col divide-y divide-neutral-200 border-y border-neutral-200">
+    @for (row of filteredRows(); track row.id + '|' + row.method + '|' + row.level) {
+      <a
+        [routerLink]="['/move', row.id]"
+        (mouseenter)="onRowEnter(row, $event)"
+        (mousemove)="onRowMove($event)"
+        (mouseleave)="onRowLeave()"
+        class="flex items-center justify-between px-2 py-2 text-sm hover:bg-neutral-50"
+      >
+        <span class="flex items-center gap-2">
+          @if (moveType(row); as type) {
+            <span
+              class="h-2 w-2 rounded-full"
+              [style.background-color]="typeColor(type)"
+            ></span>
+          }
+          <span class="capitalize">{{ displayMoveName(row) }}</span>
+        </span>
+        <span class="text-neutral-500">{{ requirementLabel(row) }}</span>
+      </a>
+    }
+  </div>
+</div>
+
+<app-move-tooltip [moveName]="hoveredMoveName()" [x]="hoverX()" [y]="hoverY()" />
