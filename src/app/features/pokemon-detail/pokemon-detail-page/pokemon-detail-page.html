@@ -1,4 +1,22 @@
-<section class="p-4">
-  <h1 class="text-xl font-semibold">Pokémon-Detail: {{ id() }}</h1>
-  <p class="text-sm text-neutral-500">Inhalt folgt in Phase 5.</p>
-</section>
+@if (isLoading()) {
+  <p class="p-6 text-sm text-neutral-500">Lädt…</p>
+} @else if (error()) {
+  <p class="p-6 text-sm text-red-600">Fehler beim Laden.</p>
+} @else if (pokemon(); as pokemon) {
+  <app-pokemon-header
+    [name]="displayName()"
+    [id]="pokemon.id"
+    [spriteUrl]="spriteUrl()"
+    [types]="types()"
+  />
+
+  <app-type-effectiveness
+    [weak]="typeEffectiveness().weak"
+    [resistant]="typeEffectiveness().resistant"
+    [immune]="typeEffectiveness().immune"
+  />
+
+  <app-base-stats [stats]="pokemon.stats" />
+
+  <app-abilities-list [abilities]="pokemon.abilities" />
+}

@@ -4,7 +4,15 @@ import { rxResource } from '@angular/core/rxjs-interop';
 import { of } from 'rxjs';
 import { tap } from 'rxjs/operators';
 import { environment } from '../../../environments/environment';
-import { EvolutionChain, Generation, Pokemon, PokemonListResponse, PokemonSpecies, TypeDetail } from '../models';
+import {
+  Ability,
+  EvolutionChain,
+  Generation,
+  Pokemon,
+  PokemonListResponse,
+  PokemonSpecies,
+  TypeDetail
+} from '../models';
 import { PokemonCacheService } from './pokemon-cache.service';
 
 @Injectable({ providedIn: 'root' })
@@ -13,10 +21,13 @@ export class PokemonApiService {
   private readonly cache = inject(PokemonCacheService);
   private readonly baseUrl = environment.pokeApiBaseUrl;
 
-  /** Must be called from an injection context (e.g. a component field initializer). */
-  getPokemon(idOrName: string | number) {
+  /**
+   * Must be called from an injection context. `params` returning `undefined` keeps the
+   * resource idle (no request) — used for "route param not resolved yet".
+   */
+  getPokemon(params: () => string | number | undefined) {
     return rxResource({
-      params: () => idOrName,
+      params,
       stream: ({ params }) => {
         const cached = this.cache.getPokemon(params);
         if (cached) {
@@ -29,10 +40,13 @@ export class PokemonApiService {
     });
   }
 
-  /** Must be called from an injection context (e.g. a component field initializer). */
-  getPokemonSpecies(idOrName: string | number) {
+  /**
+   * Must be called from an injection context. `params` returning `undefined` keeps the
+   * resource idle (no request) — used for "route param not resolved yet".
+   */
+  getPokemonSpecies(params: () => string | number | undefined) {
     return rxResource({
-      params: () => idOrName,
+      params,
       stream: ({ params }) => {
         const cached = this.cache.getSpecies(params);
         if (cached) {
@@ -45,10 +59,13 @@ export class PokemonApiService {
     });
   }
 
-  /** Must be called from an injection context (e.g. a component field initializer). */
-  getEvolutionChain(id: number) {
+  /**
+   * Must be called from an injection context. `params` returning `undefined` keeps the
+   * resource idle (no request) — used for "route param not resolved yet".
+   */
+  getEvolutionChain(params: () => number | undefined) {
     return rxResource({
-      params: () => id,
+      params,
       stream: ({ params }) => {
         const cached = this.cache.getEvolutionChain(params);
         if (cached) {
@@ -91,6 +108,25 @@ export class PokemonApiService {
     return rxResource({
       params,
       stream: ({ params: name }) => this.http.get<TypeDetail>(`${this.baseUrl}/type/${name}`)
+    });
+  }
+
+  /**
+   * Must be called from an injection context. `params` returning `undefined` keeps the
+   * resource idle (no request) — used for "no ability expanded yet".
+   */
+  getAbility(params: () => string | undefined) {
+    return rxResource({
+      params,
+      stream: ({ params: idOrName }) => {
+        const cached = this.cache.getAbility(idOrName);
+        if (cached) {
+          return of(cached);
+        }
+        return this.http
+          .get<Ability>(`${this.baseUrl}/ability/${idOrName}`)
+          .pipe(tap((ability) => this.cache.setAbility(idOrName, ability)));
+      }
     });
   }
 }

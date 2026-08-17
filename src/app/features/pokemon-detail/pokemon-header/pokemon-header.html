@@ -1,0 +1,17 @@
+<div class="flex flex-col items-center gap-3 p-6 sm:flex-row sm:items-start">
+  <img [src]="spriteUrl()" [alt]="name()" class="h-48 w-48 object-contain" />
+
+  <div class="flex flex-col items-center gap-2 sm:items-start">
+    <span class="text-sm text-neutral-400">{{ paddedId() }}</span>
+    <h1 class="text-3xl font-bold capitalize">{{ name() }}</h1>
+    <div class="flex gap-2">
+      @for (type of types(); track type) {
+        <span
+          class="rounded-full border border-neutral-300 px-3 py-1 text-sm capitalize"
+        >
+          {{ typeLabel(type) }}
+        </span>
+      }
+    </div>
+  </div>
+</div>

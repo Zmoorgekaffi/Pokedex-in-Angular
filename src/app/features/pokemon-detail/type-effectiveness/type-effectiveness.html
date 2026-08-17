@@ -1,0 +1,28 @@
+<div class="grid grid-cols-3 gap-4 p-4">
+  <div class="flex flex-col gap-2">
+    <h3 class="text-sm font-semibold text-neutral-500">{{ weakLabel() }}</h3>
+    <div class="flex flex-wrap gap-1">
+      @for (type of weak(); track type) {
+        <span class="rounded-full border border-neutral-300 px-2 py-0.5 text-xs capitalize">{{ typeLabel(type) }}</span>
+      }
+    </div>
+  </div>
+
+  <div class="flex flex-col gap-2">
+    <h3 class="text-sm font-semibold text-neutral-500">{{ resistantLabel() }}</h3>
+    <div class="flex flex-wrap gap-1">
+      @for (type of resistant(); track type) {
+        <span class="rounded-full border border-neutral-300 px-2 py-0.5 text-xs capitalize">{{ typeLabel(type) }}</span>
+      }
+    </div>
+  </div>
+
+  <div class="flex flex-col gap-2">
+    <h3 class="text-sm font-semibold text-neutral-500">{{ immuneLabel() }}</h3>
+    <div class="flex flex-wrap gap-1">
+      @for (type of immune(); track type) {
+        <span class="rounded-full border border-neutral-300 px-2 py-0.5 text-xs capitalize">{{ typeLabel(type) }}</span>
+      }
+    </div>
+  </div>
+</div>

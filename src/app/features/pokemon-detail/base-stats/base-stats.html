@@ -1,0 +1,11 @@
+<div class="flex flex-col gap-2 p-4">
+  @for (stat of stats(); track stat.stat.name) {
+    <div class="flex items-center gap-3">
+      <span class="w-24 shrink-0 text-sm text-neutral-500">{{ statLabel(stat.stat.name) }}</span>
+      <span class="w-10 shrink-0 text-right text-sm font-medium">{{ stat.base_stat }}</span>
+      <div class="h-2 flex-1 overflow-hidden rounded-full bg-neutral-100">
+        <div class="h-full rounded-full bg-neutral-800" [style.width.%]="barWidth(stat.base_stat)"></div>
+      </div>
+    </div>
+  }
+</div>

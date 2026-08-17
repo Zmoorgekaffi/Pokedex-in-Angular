@@ -3,25 +3,22 @@ import { provideHttpClientTesting } from '@angular/common/http/testing';
 import { provideZonelessChangeDetection } from '@angular/core';
 import { ComponentFixture, TestBed } from '@angular/core/testing';
 
-import { PokemonDetailPage } from './pokemon-detail-page';
+import { AbilitiesList } from './abilities-list';
 
-describe('PokemonDetailPage', () => {
-  let component: PokemonDetailPage;
-  let fixture: ComponentFixture<PokemonDetailPage>;
+describe('AbilitiesList', () => {
+  let component: AbilitiesList;
+  let fixture: ComponentFixture<AbilitiesList>;
 
   beforeEach(async () => {
     await TestBed.configureTestingModule({
-      imports: [PokemonDetailPage],
-      providers: [
-        provideZonelessChangeDetection(),
-        provideHttpClient(),
-        provideHttpClientTesting()
-      ]
+      imports: [AbilitiesList],
+      providers: [provideZonelessChangeDetection(), provideHttpClient(), provideHttpClientTesting()]
     })
     .compileComponents();
 
-    fixture = TestBed.createComponent(PokemonDetailPage);
+    fixture = TestBed.createComponent(AbilitiesList);
     component = fixture.componentInstance;
+    fixture.componentRef.setInput('abilities', []);
     fixture.detectChanges();
   });
 

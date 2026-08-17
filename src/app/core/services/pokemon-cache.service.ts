@@ -1,5 +1,5 @@
 import { Injectable, signal } from '@angular/core';
-import { EvolutionChain, Pokemon, PokemonSpecies } from '../models';
+import { Ability, EvolutionChain, Pokemon, PokemonSpecies } from '../models';
 
 function normalizeKey(key: string | number): string {
   return String(key).trim().toLowerCase();
@@ -10,6 +10,7 @@ export class PokemonCacheService {
   private readonly pokemonMap = signal(new Map<string, Pokemon>());
   private readonly speciesMap = signal(new Map<string, PokemonSpecies>());
   private readonly evolutionChainMap = signal(new Map<string, EvolutionChain>());
+  private readonly abilityMap = signal(new Map<string, Ability>());
 
   hasPokemon(key: string | number): boolean {
     return this.pokemonMap().has(normalizeKey(key));
@@ -45,5 +46,17 @@ export class PokemonCacheService {
 
   setEvolutionChain(key: string | number, value: EvolutionChain): void {
     this.evolutionChainMap.update((map) => new Map(map).set(normalizeKey(key), value));
+  }
+
+  hasAbility(key: string | number): boolean {
+    return this.abilityMap().has(normalizeKey(key));
+  }
+
+  getAbility(key: string | number): Ability | undefined {
+    return this.abilityMap().get(normalizeKey(key));
+  }
+
+  setAbility(key: string | number, value: Ability): void {
+    this.abilityMap.update((map) => new Map(map).set(normalizeKey(key), value));
   }
 }

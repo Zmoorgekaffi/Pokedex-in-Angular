@@ -1,0 +1,29 @@
+<div class="flex flex-col divide-y divide-neutral-200 border-y border-neutral-200">
+  @for (ability of abilities(); track ability.ability.name) {
+    <div>
+      <button
+        type="button"
+        (click)="toggle(ability)"
+        class="flex w-full items-center justify-between px-4 py-3 text-left text-sm"
+      >
+        <span class="flex items-center gap-2">
+          <span class="capitalize">{{ ability.ability.name }}</span>
+          @if (ability.is_hidden) {
+            <span class="rounded-full bg-neutral-100 px-2 py-0.5 text-xs text-neutral-500">Hidden</span>
+          }
+        </span>
+        <span>{{ isExpanded(ability) ? '▲' : '▼' }}</span>
+      </button>
+
+      @if (isExpanded(ability)) {
+        <div class="px-4 pb-3 text-sm text-neutral-600">
+          @if (isLoadingDetail()) {
+            <p>…</p>
+          } @else {
+            <p>{{ effectText(ability) }}</p>
+          }
+        </div>
+      }
+    </div>
+  }
+</div>

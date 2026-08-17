@@ -7,3 +7,4 @@ export * from './evolution-chain.model';
 export * from './generation.model';
 export * from './type.model';
 export * from './search-index-entry.model';
+export * from './ability.model';

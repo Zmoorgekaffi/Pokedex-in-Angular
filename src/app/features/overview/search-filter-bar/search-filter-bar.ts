@@ -1,49 +1,8 @@
 import { ChangeDetectionStrategy, Component, computed, inject, model, signal } from '@angular/core';
+import { POKEMON_TYPES, typeLabel as getTypeLabel } from '../../../core/constants/pokemon-type.constants';
 import { LanguageService } from '../../../core/services/language.service';
 import { pick } from '../../../core/utils/i18n.util';
 import { GenerationSelector } from '../generation-selector/generation-selector';
-
-export const POKEMON_TYPES: string[] = [
-  'normal',
-  'fire',
-  'water',
-  'electric',
-  'grass',
-  'ice',
-  'fighting',
-  'poison',
-  'ground',
-  'flying',
-  'psychic',
-  'bug',
-  'rock',
-  'ghost',
-  'dragon',
-  'dark',
-  'steel',
-  'fairy'
-];
-
-const TYPE_LABELS_DE: Record<string, string> = {
-  normal: 'Normal',
-  fire: 'Feuer',
-  water: 'Wasser',
-  electric: 'Elektro',
-  grass: 'Pflanze',
-  ice: 'Eis',
-  fighting: 'Kampf',
-  poison: 'Gift',
-  ground: 'Boden',
-  flying: 'Flug',
-  psychic: 'Psycho',
-  bug: 'Käfer',
-  rock: 'Gestein',
-  ghost: 'Geist',
-  dragon: 'Drache',
-  dark: 'Unlicht',
-  steel: 'Stahl',
-  fairy: 'Fee'
-};
 
 @Component({
   selector: 'app-search-filter-bar',
@@ -77,7 +36,7 @@ export class SearchFilterBar {
   readonly type2DefaultLabel = computed(() => pick(this.language(), 'Type 2', 'Typ 2'));
 
   typeLabel(type: string): string {
-    return pick(this.language(), type, TYPE_LABELS_DE[type] ?? type);
+    return getTypeLabel(type, this.language());
   }
 
   onNameInput(value: string): void {
