@@ -4,7 +4,7 @@
       type="text"
       [value]="nameQuery()"
       (input)="onNameInput($any($event.target).value)"
-      placeholder="Nach Name (DE/EN) oder Nummer filtern…"
+      [placeholder]="namePlaceholder()"
       class="flex-1 rounded-md border border-neutral-300 px-3 py-1.5 text-sm"
     />
     <button
@@ -12,7 +12,7 @@
       (click)="toggleFilters()"
       class="rounded-md border border-neutral-300 px-3 py-1.5 text-sm"
     >
-      Filter {{ filtersExpanded() ? '▲' : '▼' }}
+      {{ filterButtonLabel() }} {{ filtersExpanded() ? '▲' : '▼' }}
     </button>
   </div>
 
@@ -23,9 +23,9 @@
         (change)="onType1Change($any($event.target).value)"
         class="rounded-md border border-neutral-300 px-2 py-1.5 text-sm capitalize"
       >
-        <option value="">Typ 1</option>
+        <option value="">{{ type1DefaultLabel() }}</option>
         @for (type of type1Options(); track type) {
-          <option [value]="type" class="capitalize">{{ type }}</option>
+          <option [value]="type" class="capitalize">{{ typeLabel(type) }}</option>
         }
       </select>
 
@@ -34,9 +34,9 @@
         (change)="onType2Change($any($event.target).value)"
         class="rounded-md border border-neutral-300 px-2 py-1.5 text-sm capitalize"
       >
-        <option value="">Typ 2</option>
+        <option value="">{{ type2DefaultLabel() }}</option>
         @for (type of type2Options(); track type) {
-          <option [value]="type" class="capitalize">{{ type }}</option>
+          <option [value]="type" class="capitalize">{{ typeLabel(type) }}</option>
         }
       </select>
 

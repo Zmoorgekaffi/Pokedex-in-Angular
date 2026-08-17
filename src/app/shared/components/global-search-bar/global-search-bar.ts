@@ -3,6 +3,7 @@ import { Router } from '@angular/router';
 import { SearchIndexEntry } from '../../../core/models';
 import { LanguageService } from '../../../core/services/language.service';
 import { SearchIndexService } from '../../../core/services/search-index.service';
+import { pick } from '../../../core/utils/i18n.util';
 import { filterSearchIndex } from '../../../core/utils/search.util';
 
 const MAX_SUGGESTIONS = 8;
@@ -32,6 +33,12 @@ export class GlobalSearchBar {
     }
     return filterSearchIndex(this.searchIndex.entries(), query).slice(0, MAX_SUGGESTIONS);
   });
+
+  readonly placeholder = computed(() =>
+    pick(this.language(), 'Search Pokémon (name EN/DE or number)…', 'Pokémon suchen (Name DE/EN oder Nummer)…')
+  );
+  readonly loadingLabel = computed(() => pick(this.language(), 'Building search index…', 'Suchindex wird geladen…'));
+  readonly noMatchesLabel = computed(() => pick(this.language(), 'No matches', 'Keine Treffer'));
 
   onFocus(): void {
     this.searchIndex.ensureLoaded();

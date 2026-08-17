@@ -5,16 +5,16 @@
     (input)="onInput($any($event.target).value)"
     (focus)="onFocus()"
     (blur)="onBlur()"
-    placeholder="Pokémon suchen (Name DE/EN oder Nummer)…"
+    [placeholder]="placeholder()"
     class="w-full rounded-md border border-neutral-300 px-3 py-1.5 text-sm"
   />
 
   @if (isOpen() && query().trim()) {
     <div class="absolute z-20 mt-1 w-full rounded-md border border-neutral-300 bg-white shadow-md">
       @if (isLoading()) {
-        <p class="px-3 py-2 text-sm text-neutral-500">Suchindex wird geladen…</p>
+        <p class="px-3 py-2 text-sm text-neutral-500">{{ loadingLabel() }}</p>
       } @else if (matches().length === 0) {
-        <p class="px-3 py-2 text-sm text-neutral-500">Keine Treffer</p>
+        <p class="px-3 py-2 text-sm text-neutral-500">{{ noMatchesLabel() }}</p>
       } @else {
         <ul>
           @for (entry of matches(); track entry.id) {

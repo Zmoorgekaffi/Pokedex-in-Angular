@@ -1,4 +1,6 @@
-import { ChangeDetectionStrategy, Component, model } from '@angular/core';
+import { ChangeDetectionStrategy, Component, computed, inject, model } from '@angular/core';
+import { LanguageService } from '../../../core/services/language.service';
+import { pick } from '../../../core/utils/i18n.util';
 
 export interface GenerationOption {
   id: number;
@@ -25,8 +27,14 @@ export const GENERATIONS: GenerationOption[] = [
   changeDetection: ChangeDetectionStrategy.OnPush
 })
 export class GenerationSelector {
+  private readonly languageService = inject(LanguageService);
+
   readonly generations = GENERATIONS;
   readonly selected = model<number | undefined>(undefined);
+
+  readonly defaultLabel = computed(() =>
+    pick(this.languageService.language(), 'All generations', 'Alle Generationen')
+  );
 
   onChange(value: string): void {
     this.selected.set(value === '' ? undefined : Number(value));
