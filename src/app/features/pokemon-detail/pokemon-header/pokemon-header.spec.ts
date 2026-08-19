@@ -20,6 +20,7 @@ describe('PokemonHeader', () => {
     fixture.componentRef.setInput('id', 1);
     fixture.componentRef.setInput('spriteUrl', 'https://example.com/sprite.png');
     fixture.componentRef.setInput('types', ['grass', 'poison']);
+    fixture.componentRef.setInput('isLoading', false);
     fixture.detectChanges();
   });
 

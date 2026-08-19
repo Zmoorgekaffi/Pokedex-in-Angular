@@ -1,0 +1,35 @@
+<app-component-title [title]="title()" />
+
+<div class="flex flex-col gap-2 p-4">
+  @if (isLoading()) {
+    <div class="flex justify-center p-4">
+      <app-loading-spinner />
+    </div>
+  } @else if (availableVersions().length === 0) {
+    <p class="text-sm text-neutral-500">{{ noVersionsLabel() }}</p>
+  } @else {
+    <select
+      #versionSelect
+      [value]="selectedVersion() ?? ''"
+      (change)="onVersionChange($any($event.target).value)"
+      class="w-fit rounded-md border border-neutral-300 px-2 py-1.5 text-sm"
+    >
+      @for (version of availableVersions(); track version) {
+        <option [value]="version">{{ versionLabel(version) }}</option>
+      }
+    </select>
+
+    @if (rows().length > 0) {
+      <ul class="flex flex-col divide-y divide-neutral-200 border-y border-neutral-200">
+        @for (row of rows(); track row.areaName) {
+          <li class="flex items-center justify-between py-2 text-sm">
+            <span>{{ areaLabel(row) }}</span>
+            <span class="text-neutral-500">Lvl. {{ row.minLevel }}–{{ row.maxLevel }} · {{ row.chance }}%</span>
+          </li>
+        }
+      </ul>
+    } @else {
+      <p class="text-sm text-neutral-500">{{ noEncountersLabel() }}</p>
+    }
+  }
+</div>

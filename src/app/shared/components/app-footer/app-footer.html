@@ -1,0 +1,12 @@
+<footer class="mt-8 border-t border-neutral-200 bg-white h-40 pt-4">
+  <a routerLink="/" class="text-lg font-bold whitespace-nowrap p-4">Pokédex</a>
+  <div class="mx-auto flex max-w-app flex-col gap-2 px-4 py-4 text-sm text-neutral-600 sm:flex-row sm:items-center sm:justify-between">
+    
+    
+    <nav class="gap-2 flex flex-col w-full items-end">
+      <a routerLink="/" class="hover:text-neutral-900">{{ overviewLabel() }}</a>
+      <a routerLink="/about" class="hover:text-neutral-900">{{ aboutLabel() }}</a>
+      <a href="https://andre-karyoti.com" target="_blank" class="hover:text-neutral-900">{{ aboutPortfolio() }}</a>
+    </nav>
+  </div>
+</footer>

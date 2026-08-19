@@ -1,14 +1,17 @@
 @if (isLoading()) {
-  <p class="p-4 text-sm text-neutral-500">…</p>
+  <div class="flex h-80 items-center justify-center">
+    <app-loading-spinner />
+  </div>
 } @else if (nodes().length > 0) {
   <swiper-container
+    #swiperEl
     class="w-full pt-10 h-80 flex justify-center items-center"
     slides-per-view="auto"
     space-between="24"
     centered-slides="true"
     slide-to-clicked-slide="true"
     navigation="true"
-    [attr.initial-slide]="initialSlideIndex()"
+    init="false"
     (swiperslidechangetransitionend)="onSlideChangeEnd($any($event))"
   >
     @for (node of nodes(); track node.id) {

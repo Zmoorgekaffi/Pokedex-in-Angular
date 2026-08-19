@@ -12,7 +12,10 @@
   @if (isOpen() && query().trim()) {
     <div class="absolute z-20 mt-1 w-full rounded-md border border-neutral-300 bg-white shadow-md">
       @if (isLoading()) {
-        <p class="px-3 py-2 text-sm text-neutral-500">{{ loadingLabel() }}</p>
+        <div class="flex items-center gap-2 px-3 py-2 text-sm text-neutral-500">
+          <app-loading-spinner size="sm" />
+          {{ loadingLabel() }}
+        </div>
       } @else if (matches().length === 0) {
         <p class="px-3 py-2 text-sm text-neutral-500">{{ noMatchesLabel() }}</p>
       } @else {

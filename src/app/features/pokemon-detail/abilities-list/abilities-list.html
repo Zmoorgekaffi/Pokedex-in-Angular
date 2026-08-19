@@ -1,3 +1,5 @@
+<app-component-title [title]="title()" />
+
 <div class="flex flex-col divide-y divide-neutral-200 border-y border-neutral-200">
   @for (ability of abilities(); track ability.ability.name) {
     <div>
@@ -18,7 +20,7 @@
       @if (isExpanded(ability)) {
         <div class="px-4 pb-3 text-sm text-neutral-600">
           @if (isLoadingDetail()) {
-            <p>…</p>
+            <app-loading-spinner size="sm" />
           } @else {
             <p>{{ effectText(ability) }}</p>
           }

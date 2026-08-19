@@ -1,7 +1,27 @@
-<div class="flex flex-col items-center gap-3 p-6 sm:flex-row sm:items-start">
-  <img [src]="spriteUrl()" [alt]="name()" class="h-48 w-48 object-contain" />
+<div
+  class="min-h-180 overflow-hidden relative flex flex-col items-center justify-center gap-3 p-6 sm:flex-row"
+>
+  <div class="z-[-1] absolute inset-0">
+    <img class="absolute inset-0 h-full w-full object-cover" src="imgs/pokedex-detail-bg.png" alt="" />
+  </div>
 
-  <div class="flex flex-col items-center gap-2 sm:items-start">
+  <div class="h-48 w-48 sm:h-64 sm:w-64 lg:h-80 lg:w-80 mt-40 absolute bottom-34 sm:top-35">
+    @if (showSpinner()) {
+      <div class="absolute inset-0 flex items-center justify-center">
+        <app-loading-spinner size="lg" />
+      </div>
+    }
+    <img
+      [src]="displaySpriteUrl()"
+      (load)="onImageLoad()"
+      (error)="onImageError()"
+      [alt]="name()"
+      class="h-full w-full object-contain"
+      [class.invisible]="showSpinner()"
+    />
+  </div>
+
+  <div class="flex flex-col items-center gap-2 sm:items-start absolute top-65 sm:top-45">
     <span class="text-sm text-neutral-400">{{ paddedId() }}</span>
     <h1 class="text-3xl font-bold capitalize">{{ name() }}</h1>
     <div class="flex gap-2">

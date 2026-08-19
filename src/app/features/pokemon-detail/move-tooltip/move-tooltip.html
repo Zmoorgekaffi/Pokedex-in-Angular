@@ -5,7 +5,7 @@
     [style.top.px]="y() + 12"
   >
     @if (isLoading()) {
-      <span class="text-neutral-400">…</span>
+      <app-loading-spinner size="sm" />
     } @else {
       <span class="font-medium capitalize">{{ displayName() }}</span>
       @if (typeName(); as type) {

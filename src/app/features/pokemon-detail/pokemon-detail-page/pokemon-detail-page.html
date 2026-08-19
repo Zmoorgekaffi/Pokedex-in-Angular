@@ -4,33 +4,51 @@
     [id]="pokemon.id"
     [spriteUrl]="spriteUrl()"
     [types]="types()"
+    [isLoading]="isLoading()"
   />
 
+@if (evolutionChainId(); as chainId) {
+@defer (on viewport) {
+  <app-evolution-chain [chainId]="chainId" [currentId]="pokemon.id" />
+} @placeholder {
+  <div class="flex h-40 items-center justify-center">
+    <app-loading-spinner />
+  </div>
+}
+}
   <app-type-effectiveness
-    [weak]="typeEffectiveness().weak"
+    [veryEffective]="typeEffectiveness().veryEffective"
+    [effective]="typeEffectiveness().effective"
     [resistant]="typeEffectiveness().resistant"
     [immune]="typeEffectiveness().immune"
   />
+
 
   <app-base-stats [stats]="pokemon.stats" />
 
   <app-abilities-list [abilities]="pokemon.abilities" />
 
-  @if (evolutionChainId(); as chainId) {
-    @defer (on viewport) {
-      <app-evolution-chain [chainId]="chainId" [currentId]="pokemon.id" />
-    } @placeholder {
-      <div class="h-40"></div>
-    }
-  }
+
 
   @defer (on viewport) {
     <app-moveset-table [moves]="pokemon.moves" />
   } @placeholder {
-    <div class="h-40"></div>
+    <div class="flex h-40 items-center justify-center">
+      <app-loading-spinner />
+    </div>
+  }
+
+  @defer (on viewport) {
+    <app-location-encounters [pokemonId]="pokemon.id" />
+  } @placeholder {
+    <div class="flex h-40 items-center justify-center">
+      <app-loading-spinner />
+    </div>
   }
 } @else if (isLoading()) {
-  <p class="p-6 text-sm text-neutral-500">Lädt…</p>
+  <div class="flex justify-center p-6">
+    <app-loading-spinner size="lg" />
+  </div>
 } @else if (error()) {
   <p class="p-6 text-sm text-red-600">Fehler beim Laden.</p>
 }

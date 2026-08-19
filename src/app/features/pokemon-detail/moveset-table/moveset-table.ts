@@ -11,6 +11,8 @@ import { LanguageService } from '../../../core/services/language.service';
 import { MoveApiService } from '../../../core/services/move-api.service';
 import { pick } from '../../../core/utils/i18n.util';
 import { buildMovesetRows, MovesetRow } from '../../../core/utils/moveset.util';
+import { ComponentTitle } from '../../../shared/components/component-title/component-title';
+import { LoadingSpinner } from '../../../shared/components/loading-spinner/loading-spinner';
 import { MoveTooltip } from '../move-tooltip/move-tooltip';
 
 export interface MoveTypeGroup {
@@ -20,7 +22,7 @@ export interface MoveTypeGroup {
 
 @Component({
   selector: 'app-moveset-table',
-  imports: [RouterLink, MoveTooltip],
+  imports: [RouterLink, MoveTooltip, LoadingSpinner, ComponentTitle],
   templateUrl: './moveset-table.html',
   styleUrl: './moveset-table.css',
   changeDetection: ChangeDetectionStrategy.OnPush
@@ -32,6 +34,8 @@ export class MovesetTable {
   readonly moves = input.required<PokemonMove[]>();
 
   readonly language = this.languageService.language;
+
+  readonly title = computed(() => pick(this.language(), 'Moveset', 'Attacken'));
 
   private readonly rows = computed<MovesetRow[]>(() => buildMovesetRows(this.moves()));
 
@@ -64,7 +68,7 @@ export class MovesetTable {
       if (method && row.method !== method) {
         return false;
       }
-      if (level !== undefined && row.level !== level) {
+      if (level !== undefined && !row.levels.includes(level)) {
         return false;
       }
       return true;
@@ -139,7 +143,7 @@ export class MovesetTable {
   }
 
   requirementLabel(row: MovesetRow): string {
-    return row.method === 'level-up' ? `Lvl. ${row.level}` : this.learnMethodLabel(row.method);
+    return row.method === 'level-up' ? `Lvl. ${row.levels.join(', ')}` : this.learnMethodLabel(row.method);
   }
 
   /** Falls back to the EN slug until the bulk move fetch resolves that row's entry. */

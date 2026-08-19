@@ -1,0 +1,14 @@
+<app-component-title [title]="title()" />
+
+<div class="flex flex-col gap-6 p-4">
+  <p class="text-sm text-neutral-600">{{ intro() }}</p>
+
+  <ul class="flex flex-col gap-4">
+    @for (topic of topics(); track topic.title) {
+      <li class="rounded-lg border border-neutral-200 p-4">
+        <h3 class="font-semibold text-neutral-800">{{ topic.title }}</h3>
+        <p class="mt-1 text-sm text-neutral-600">{{ topic.description }}</p>
+      </li>
+    }
+  </ul>
+</div>

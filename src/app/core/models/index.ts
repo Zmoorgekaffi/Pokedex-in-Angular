@@ -8,3 +8,5 @@ export * from './generation.model';
 export * from './type.model';
 export * from './search-index-entry.model';
 export * from './ability.model';
+export * from './location-area-encounter.model';
+export * from './location-area.model';

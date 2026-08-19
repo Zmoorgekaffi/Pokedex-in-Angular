@@ -1,5 +1,5 @@
 import { Injectable, signal } from '@angular/core';
-import { Ability, EvolutionChain, Pokemon, PokemonSpecies } from '../models';
+import { Ability, EvolutionChain, LocationArea, LocationAreaEncounter, Pokemon, PokemonSpecies } from '../models';
 
 function normalizeKey(key: string | number): string {
   return String(key).trim().toLowerCase();
@@ -11,6 +11,8 @@ export class PokemonCacheService {
   private readonly speciesMap = signal(new Map<string, PokemonSpecies>());
   private readonly evolutionChainMap = signal(new Map<string, EvolutionChain>());
   private readonly abilityMap = signal(new Map<string, Ability>());
+  private readonly encountersMap = signal(new Map<string, LocationAreaEncounter[]>());
+  private readonly locationAreaMap = signal(new Map<string, LocationArea>());
 
   hasPokemon(key: string | number): boolean {
     return this.pokemonMap().has(normalizeKey(key));
@@ -58,5 +60,21 @@ export class PokemonCacheService {
 
   setAbility(key: string | number, value: Ability): void {
     this.abilityMap.update((map) => new Map(map).set(normalizeKey(key), value));
+  }
+
+  getEncounters(key: string | number): LocationAreaEncounter[] | undefined {
+    return this.encountersMap().get(normalizeKey(key));
+  }
+
+  setEncounters(key: string | number, value: LocationAreaEncounter[]): void {
+    this.encountersMap.update((map) => new Map(map).set(normalizeKey(key), value));
+  }
+
+  getLocationArea(key: string | number): LocationArea | undefined {
+    return this.locationAreaMap().get(normalizeKey(key));
+  }
+
+  setLocationArea(key: string | number, value: LocationArea): void {
+    this.locationAreaMap.update((map) => new Map(map).set(normalizeKey(key), value));
   }
 }

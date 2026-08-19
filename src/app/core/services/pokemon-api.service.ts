@@ -1,19 +1,24 @@
 import { HttpClient } from '@angular/common/http';
 import { Injectable, inject } from '@angular/core';
 import { rxResource } from '@angular/core/rxjs-interop';
-import { of } from 'rxjs';
-import { tap } from 'rxjs/operators';
+import { from, of } from 'rxjs';
+import { mergeMap, tap, toArray } from 'rxjs/operators';
 import { environment } from '../../../environments/environment';
 import {
   Ability,
   EvolutionChain,
   Generation,
+  LocationArea,
+  LocationAreaEncounter,
   Pokemon,
   PokemonListResponse,
   PokemonSpecies,
   TypeDetail
 } from '../models';
 import { PokemonCacheService } from './pokemon-cache.service';
+
+/** Concurrency cap so a location list with many areas doesn't fire dozens of requests at once. */
+const LOCATION_AREA_FETCH_CONCURRENCY = 15;
 
 @Injectable({ providedIn: 'root' })
 export class PokemonApiService {
@@ -108,6 +113,49 @@ export class PokemonApiService {
     return rxResource({
       params,
       stream: ({ params: name }) => this.http.get<TypeDetail>(`${this.baseUrl}/type/${name}`)
+    });
+  }
+
+  /**
+   * Must be called from an injection context. `params` returning `undefined` keeps the
+   * resource idle (no request) — used for "route param not resolved yet".
+   */
+  getEncounters(params: () => string | number | undefined) {
+    return rxResource({
+      params,
+      stream: ({ params }) => {
+        const cached = this.cache.getEncounters(params);
+        if (cached) {
+          return of(cached);
+        }
+        return this.http
+          .get<LocationAreaEncounter[]>(`${this.baseUrl}/pokemon/${params}/encounters`)
+          .pipe(tap((encounters) => this.cache.setEncounters(params, encounters)));
+      }
+    });
+  }
+
+  /**
+   * Must be called from an injection context. `params` returning `undefined` keeps the resource
+   * idle. Bulk-fetches (concurrency-capped, same pattern as `MoveApiService.getMoves`) so a whole
+   * location list's localized area names can be read without one resource per row.
+   */
+  getLocationAreas(params: () => string[] | undefined) {
+    return rxResource({
+      params,
+      stream: ({ params: names }) =>
+        from(names).pipe(
+          mergeMap((name) => {
+            const cached = this.cache.getLocationArea(name);
+            if (cached) {
+              return of(cached);
+            }
+            return this.http
+              .get<LocationArea>(`${this.baseUrl}/location-area/${name}`)
+              .pipe(tap((area) => this.cache.setLocationArea(name, area)));
+          }, LOCATION_AREA_FETCH_CONCURRENCY),
+          toArray()
+        )
     });
   }
 

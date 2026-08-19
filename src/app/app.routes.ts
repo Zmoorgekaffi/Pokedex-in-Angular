@@ -19,5 +19,9 @@ export const routes: Routes = [
       import('./features/move-detail/move-detail-page/move-detail-page').then(
         (m) => m.MoveDetailPage
       )
+  },
+  {
+    path: 'about',
+    loadComponent: () => import('./features/about/about-page/about-page').then((m) => m.AboutPage)
   }
 ];

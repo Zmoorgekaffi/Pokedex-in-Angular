@@ -16,7 +16,8 @@ describe('TypeEffectiveness', () => {
 
     fixture = TestBed.createComponent(TypeEffectiveness);
     component = fixture.componentInstance;
-    fixture.componentRef.setInput('weak', []);
+    fixture.componentRef.setInput('veryEffective', []);
+    fixture.componentRef.setInput('effective', []);
     fixture.componentRef.setInput('resistant', []);
     fixture.componentRef.setInput('immune', []);
     fixture.detectChanges();

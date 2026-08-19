@@ -3,10 +3,11 @@ import { typeColor as getTypeColor, typeTextColor as getTypeTextColor } from '..
 import { typeLabel as getTypeLabel } from '../../../core/constants/pokemon-type.constants';
 import { LanguageService } from '../../../core/services/language.service';
 import { MoveApiService } from '../../../core/services/move-api.service';
+import { LoadingSpinner } from '../../../shared/components/loading-spinner/loading-spinner';
 
 @Component({
   selector: 'app-move-tooltip',
-  imports: [],
+  imports: [LoadingSpinner],
   templateUrl: './move-tooltip.html',
   styleUrl: './move-tooltip.css',
   changeDetection: ChangeDetectionStrategy.OnPush

@@ -5,6 +5,7 @@ import { SearchIndexService } from '../../../core/services/search-index.service'
 import { GridItem, toGridItem } from '../../../core/utils/pokemon.util';
 import { filterSearchIndex } from '../../../core/utils/search.util';
 import { LoadMoreTrigger } from '../../../shared/components/load-more-trigger/load-more-trigger';
+import { LoadingSpinner } from '../../../shared/components/loading-spinner/loading-spinner';
 import { PokemonGrid } from '../pokemon-grid/pokemon-grid';
 import { SearchFilterBar } from '../search-filter-bar/search-filter-bar';
 
@@ -12,7 +13,7 @@ const PAGE_SIZE = 20;
 
 @Component({
   selector: 'app-overview-page',
-  imports: [PokemonGrid, SearchFilterBar, LoadMoreTrigger],
+  imports: [PokemonGrid, SearchFilterBar, LoadMoreTrigger, LoadingSpinner],
   templateUrl: './overview-page.html',
   styleUrl: './overview-page.css',
   changeDetection: ChangeDetectionStrategy.OnPush

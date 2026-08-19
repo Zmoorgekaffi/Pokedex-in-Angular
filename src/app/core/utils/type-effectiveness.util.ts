@@ -2,7 +2,10 @@ import { POKEMON_TYPES } from '../constants/pokemon-type.constants';
 import { TypeRelations } from '../models';
 
 export interface TypeEffectivenessResult {
-  weak: string[];
+  /** Deals 4x damage (both of this Pokémon's types are weak to it) — "It's super effective!" territory, the more dangerous tier. */
+  veryEffective: string[];
+  /** Deals 2x damage (one type is weak to it). */
+  effective: string[];
   resistant: string[];
   immune: string[];
 }
@@ -26,12 +29,14 @@ export function computeTypeEffectiveness(relations: TypeRelations[]): TypeEffect
     }
   }
 
-  const result: TypeEffectivenessResult = { weak: [], resistant: [], immune: [] };
+  const result: TypeEffectivenessResult = { veryEffective: [], effective: [], resistant: [], immune: [] };
   for (const [type, multiplier] of multipliers) {
     if (multiplier === 0) {
       result.immune.push(type);
+    } else if (multiplier >= 4) {
+      result.veryEffective.push(type);
     } else if (multiplier > 1) {
-      result.weak.push(type);
+      result.effective.push(type);
     } else if (multiplier < 1) {
       result.resistant.push(type);
     }

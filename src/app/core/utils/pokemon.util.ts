@@ -21,6 +21,16 @@ export function getPokemonSpriteUrl(id: number): string {
   return `https://cdn.jsdelivr.net/gh/PokeAPI/sprites/sprites/pokemon/${id}.png`;
 }
 
+/**
+ * Same jsDelivr mirror as {@link getPokemonSpriteUrl}, just the official-artwork path instead of
+ * the small default sprite — used as the detail page's hero image. A handful of IDs (unreleased
+ * forms, some edge-case variants) don't have artwork in the repo; callers should fall back to
+ * {@link getPokemonSpriteUrl} on load error rather than assume every ID resolves.
+ */
+export function getPokemonArtworkUrl(id: number): string {
+  return `https://cdn.jsdelivr.net/gh/PokeAPI/sprites/sprites/pokemon/other/official-artwork/${id}.png`;
+}
+
 export function toGridItem(resource: NamedApiResource): GridItem {
   const id = extractIdFromResourceUrl(resource.url);
   return { id, name: resource.name, spriteUrl: getPokemonSpriteUrl(id) };

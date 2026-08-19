@@ -5,13 +5,14 @@ import { LanguageService } from '../../../core/services/language.service';
 import { SearchIndexService } from '../../../core/services/search-index.service';
 import { pick } from '../../../core/utils/i18n.util';
 import { filterSearchIndex } from '../../../core/utils/search.util';
+import { LoadingSpinner } from '../loading-spinner/loading-spinner';
 
 const MAX_SUGGESTIONS = 8;
 const BLUR_CLOSE_DELAY_MS = 150;
 
 @Component({
   selector: 'app-global-search-bar',
-  imports: [],
+  imports: [LoadingSpinner],
   templateUrl: './global-search-bar.html',
   styleUrl: './global-search-bar.css',
   changeDetection: ChangeDetectionStrategy.OnPush

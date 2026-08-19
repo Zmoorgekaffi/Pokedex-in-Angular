@@ -5,7 +5,19 @@
   [(selectedGeneration)]="selectedGeneration"
 />
 
-<app-pokemon-grid [items]="visibleItems()" />
+@if (isLoading() && visibleItems().length === 0) {
+  <div class="flex justify-center p-10">
+    <app-loading-spinner size="lg" />
+  </div>
+} @else {
+  <app-pokemon-grid [items]="visibleItems()" />
+
+  @if (isLoading()) {
+    <div class="flex justify-center p-4">
+      <app-loading-spinner />
+    </div>
+  }
+}
 
 @if (hasMore()) {
   <app-load-more-trigger [disabled]="!hasMore() || isLoading()" (loadMore)="loadMore()" />

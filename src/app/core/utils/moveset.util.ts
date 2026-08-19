@@ -6,30 +6,39 @@ export interface MovesetRow {
   id: number;
   name: string;
   method: string;
-  /** 0 for non-level-up methods (machine/egg/tutor don't have a level). */
-  level: number;
+  /** Every distinct level this move is learned at via this method, ascending. [0] for non-level-up methods (machine/egg/tutor don't have a level). */
+  levels: number[];
 }
 
 /**
- * Flattens each move's per-version-group learn details into rows, deduped by (move, method, level)
- * since the same requirement repeats across many games — we don't track a "current game" concept.
+ * Flattens each move's per-version-group learn details into rows, one row per (move, method) —
+ * a move learnable at several levels across different games (e.g. Slam at 20/25/30) collapses into
+ * a single row listing all of those levels instead of one row per level, since we don't track a
+ * "current game" concept.
  */
 export function buildMovesetRows(moves: PokemonMove[]): MovesetRow[] {
-  const rows: MovesetRow[] = [];
-  const seen = new Set<string>();
+  const rowByKey = new Map<string, MovesetRow>();
 
   for (const move of moves) {
     const id = extractIdFromResourceUrl(move.move.url);
     for (const detail of move.version_group_details) {
       const method = detail.move_learn_method.name;
       const level = detail.level_learned_at;
-      const key = `${id}|${method}|${level}`;
-      if (seen.has(key)) {
-        continue;
+      const key = `${id}|${method}`;
+      const row = rowByKey.get(key);
+      if (row) {
+        if (!row.levels.includes(level)) {
+          row.levels.push(level);
+        }
+      } else {
+        rowByKey.set(key, { id, name: move.move.name, method, levels: [level] });
       }
-      seen.add(key);
-      rows.push({ id, name: move.move.name, method, level });
     }
+  }
+
+  const rows = [...rowByKey.values()];
+  for (const row of rows) {
+    row.levels.sort((a, b) => a - b);
   }
 
   return rows.sort((a, b) => {
@@ -38,8 +47,8 @@ export function buildMovesetRows(moves: PokemonMove[]): MovesetRow[] {
     if (orderA !== orderB) {
       return orderA - orderB;
     }
-    if (a.level !== b.level) {
-      return a.level - b.level;
+    if (a.levels[0] !== b.levels[0]) {
+      return a.levels[0] - b.levels[0];
     }
     return a.name.localeCompare(b.name);
   });

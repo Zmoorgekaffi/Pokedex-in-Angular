@@ -1,8 +1,23 @@
-<div class="grid grid-cols-3 gap-4 p-4">
+<app-component-title [title]="title()" />
+
+<div class="grid grid-cols-4 gap-4 p-4">
   <div class="flex flex-col gap-2">
-    <h3 class="text-sm font-semibold text-neutral-500">{{ weakLabel() }}</h3>
+    <h3 class="text-sm font-semibold text-neutral-500">{{ veryEffectiveLabel() }}</h3>
     <div class="flex flex-wrap gap-1">
-      @for (type of weak(); track type) {
+      @for (type of veryEffective(); track type) {
+        <span
+          class="rounded-full px-2 py-0.5 text-xs capitalize"
+          [style.background-color]="typeColor(type)"
+          [style.color]="typeTextColor(type)"
+        >{{ typeLabel(type) }}</span>
+      }
+    </div>
+  </div>
+
+  <div class="flex flex-col gap-2">
+    <h3 class="text-sm font-semibold text-neutral-500">{{ effectiveLabel() }}</h3>
+    <div class="flex flex-wrap gap-1">
+      @for (type of effective(); track type) {
         <span
           class="rounded-full px-2 py-0.5 text-xs capitalize"
           [style.background-color]="typeColor(type)"

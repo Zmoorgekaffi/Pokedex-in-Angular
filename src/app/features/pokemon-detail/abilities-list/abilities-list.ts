@@ -1,11 +1,14 @@
-import { ChangeDetectionStrategy, Component, inject, input, signal } from '@angular/core';
+import { ChangeDetectionStrategy, Component, computed, inject, input, signal } from '@angular/core';
 import { PokemonAbility } from '../../../core/models';
 import { LanguageService } from '../../../core/services/language.service';
 import { PokemonApiService } from '../../../core/services/pokemon-api.service';
+import { pick } from '../../../core/utils/i18n.util';
+import { ComponentTitle } from '../../../shared/components/component-title/component-title';
+import { LoadingSpinner } from '../../../shared/components/loading-spinner/loading-spinner';
 
 @Component({
   selector: 'app-abilities-list',
-  imports: [],
+  imports: [ComponentTitle, LoadingSpinner],
   templateUrl: './abilities-list.html',
   styleUrl: './abilities-list.css',
   changeDetection: ChangeDetectionStrategy.OnPush
@@ -17,6 +20,8 @@ export class AbilitiesList {
   readonly abilities = input.required<PokemonAbility[]>();
 
   readonly language = this.languageService.language;
+
+  readonly title = computed(() => pick(this.language(), 'Abilities', 'Fähigkeiten'));
 
   /** Single-open accordion: only the expanded ability's name is set, which also gates the fetch below. */
   private readonly expandedName = signal<string | undefined>(undefined);
